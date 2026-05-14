@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="java.util.*,model.Post"%>
+<%@ page import="java.util.*,com.example.app.Post"%>
 
 <h2>掲示板</h2>
 
@@ -86,7 +86,7 @@ if (posts != null && posts.size() > 0) {
 
 		<!-- 詳細 -->
 		<a class="mainBtn"
-		   href="<%=request.getContextPath()%>/detail?id=<%=p.getId()%>">
+		   href="<%=request.getContextPath()%>/detail?id=<%=p.getUserId()%>">
 
 			詳細
 

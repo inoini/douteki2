@@ -1,0 +1,94 @@
+<div th:fragment="header">
+<meta charset="UTF-8">
+
+<header class="header-bar">
+
+    <!-- 左 -->
+    <div class="left">
+
+        <a href="/list" class="logo">
+        </a>
+
+    </div>
+
+    <!-- 右 -->
+    <div class="right">
+
+        <!-- 投稿一覧 -->
+        <a href="/list" class="header-btn">
+            投稿一覧
+        </a>
+
+        <!-- ダークモード -->
+        <button class="header-btn" onclick="toggleDarkMode()">
+            🌙
+        </button>
+
+        <!-- ===================== -->
+        <!-- 未ログイン -->
+        <!-- ===================== -->
+        <div th:if="${session.loginUser == null and session.admin == null}">
+
+            <a href="/register" class="header-btn">
+                新規登録
+            </a>
+
+            <a href="/login" class="header-btn">
+                ログイン
+            </a>
+
+            <a href="/adminLogin" class="header-btn admin-btn">
+                管理者
+            </a>
+
+        </div>
+
+        <!-- ===================== -->
+        <!-- ユーザーログイン中 -->
+        <!-- ===================== -->
+        <div th:if="${session.loginUser != null}">
+
+            <span style="color:white; margin-right:10px;"
+                  th:text="${session.loginUser.name}">
+            </span>
+
+            <form action="/logout"
+                  method="post"
+                  style="display:inline;">
+
+                <button type="submit"
+                        class="header-btn logout-btn">
+
+                    ログアウト
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- ===================== -->
+        <!-- 管理者ログイン中 -->
+        <!-- ===================== -->
+        <div th:if="${session.admin != null}">
+
+            <form action="/logout"
+                  method="post"
+                  style="display:inline;">
+
+                <button type="submit"
+                        class="header-btn admin-btn">
+
+                    管理者ログアウト
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</header>
+
+</div>

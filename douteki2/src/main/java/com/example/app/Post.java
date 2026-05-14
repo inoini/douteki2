@@ -1,4 +1,4 @@
-package model;
+package com.example.app;
 
 public class Post {
 
@@ -10,12 +10,28 @@ public class Post {
     private String snsUrl2;
     private String createdAt;
     private boolean isAdmin;
+
+    // DM用（投稿者ユーザーID）
+    private int userId;
+
+    // =========================
+    // getter / setter
+    // =========================
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -49,6 +65,7 @@ public class Post {
     public void setDiscordName(String discordName) {
         this.discordName = discordName;
     }
+
     public String getSnsUrl2() {
         return snsUrl2;
     }
@@ -57,7 +74,6 @@ public class Post {
         this.snsUrl2 = snsUrl2;
     }
 
-
     public String getCreatedAt() {
         return createdAt;
     }
@@ -65,6 +81,7 @@ public class Post {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
+
     public boolean isAdmin() {
         return isAdmin;
     }

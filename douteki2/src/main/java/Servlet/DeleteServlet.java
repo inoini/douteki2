@@ -2,7 +2,8 @@ package Servlet;
 
 import java.io.IOException;
 
-import dao.PostDAO;
+import com.example.app.PostDAO;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

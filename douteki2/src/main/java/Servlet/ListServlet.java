@@ -3,14 +3,15 @@ package Servlet;
 import java.io.IOException;
 import java.util.List;
 
-import dao.PostDAO;
+import com.example.app.Post;
+import com.example.app.PostDAO;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.Post;
 
 
 @WebServlet("/list")

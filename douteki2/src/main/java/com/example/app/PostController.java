@@ -2,143 +2,191 @@ package com.example.app;
 
 import java.util.List;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import dao.PostDAO;
 import jakarta.servlet.http.HttpSession;
-import model.Post;
+import model.User;
 
 @Controller
 public class PostController {
 
+    // ★DAOは1つだけ
     private final PostDAO dao = new PostDAO();
 
     // =========================
-    // 一覧（ページング）
+    // トップ
+    // =========================
+    @GetMapping("/")
+    public String home(Model model) {
+        model.addAttribute("posts", dao.findAll());
+        return "list";
+    }
+
+    // =========================
+    // 管理者画面
+    // =========================
+    @GetMapping("/admin")
+    public String adminPage(Model model,
+                            HttpSession session) {
+
+        String role = (String) session.getAttribute("role");
+
+        if (!"admin".equals(role)) {
+            return "redirect:/admin/login";
+        }
+
+        model.addAttribute("posts", dao.findAll());
+
+        return "admin";
+    }
+    // =========================
+    // 一覧
     // =========================
     @GetMapping("/list")
-    public String list(
-            @RequestParam(defaultValue = "1") int page,
-            Model model,
-            HttpSession session) {
+    public String list(@RequestParam(defaultValue = "1") int page,
+                       @RequestParam(required = false) String keyword,
+                       @CookieValue(value = "registered", required = false) String registered,
+                       Model model,
+                       HttpSession session) {
 
-        int limit = 24;
-        int offset = (page - 1) * limit;
+        List<Post> posts;
 
-        List<Post> posts = dao.getPostsByPage(limit, offset);
+        if (keyword != null && !keyword.isBlank()) {
+            posts = dao.searchPosts(keyword, 24, (page - 1) * 24);
+        } else {
+            posts = dao.getPostsByPage(24, (page - 1) * 24);
+        }
 
-        // ⭐ログイン状態判定
+        // ★ログイン状態
+        String userId = (String) session.getAttribute("loginUserId");
+        boolean isLogin = (userId != null);
+
+        // ★管理者判定
         String role = (String) session.getAttribute("role");
         boolean isAdmin = "admin".equals(role);
 
         model.addAttribute("posts", posts);
+        model.addAttribute("isLogin", isLogin);
+        model.addAttribute("isAdmin", isAdmin);
+        model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", page);
-        model.addAttribute("isAdmin", isAdmin); // ⭐これ追加
+
+        // ★Cookie追加
+        model.addAttribute("registered", registered);
 
         return "list";
     }
+ 
     // =========================
     // 投稿
     // =========================
     @PostMapping("/post")
-    public String post(
-            @RequestParam String name,
-            @RequestParam String message,
-            @RequestParam(required = false) String snsUrl,
-            @RequestParam(required = false) String snsUrl2,
-            @RequestParam(required = false) String discordName,
-            HttpSession session,
-            Model model
-    ) {
+    public String post(@RequestParam String message,
+                       @RequestParam(required = false) String snsUrl,
+                       @RequestParam(required = false) String snsUrl2,
+                       @RequestParam(required = false) String discordName,
+                       HttpSession session) {
 
-        String role = (String) session.getAttribute("role");
+        // ログインチェック
+        User user = (User) session.getAttribute("loginUser");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // ログインユーザー情報取得
+        String name = user.getName();
+        String role = user.getRole();
+
         boolean isAdmin = "admin".equals(role);
 
-        try {
+        // SNS整形
+        if (snsUrl != null) {
+            snsUrl = snsUrl.replace("@", "")
+                    .replace("https://twitter.com/", "")
+                    .replace("http://twitter.com/", "")
+                    .replace("twitter.com/", "");
+        }
 
-            // ⭐一般ユーザー制限
-            if (!isAdmin) {
+        if (snsUrl2 != null) {
+            snsUrl2 = snsUrl2.replace("@", "")
+                    .replace("https://instagram.com/", "")
+                    .replace("http://instagram.com/", "")
+                    .replace("instagram.com/", "");
+        }
 
-                int count = dao.countPostsToday(name);
+        // 投稿制限（一般ユーザーのみ）
+        if (!isAdmin) {
 
-                if (count >= 2) {
-                    System.out.println("投稿制限");
+            Integer count = (Integer) session.getAttribute("postCount");
 
-                    return "redirect:/list?limit=1";
-                }
+            if (count == null) {
+                count = 0;
             }
 
-            dao.insertPost(name, message, snsUrl, snsUrl2, discordName, isAdmin);
+            if (count >= 2) {
+                return "redirect:/list?limit=1";
+            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            session.setAttribute("postCount", count + 1);
         }
+
+        // 投稿保存
+        dao.insertPost(name, message, snsUrl, snsUrl2, discordName, isAdmin);
+
+        // 古い投稿削除
+        dao.deleteOldestPostIfOver500();
 
         return "redirect:/list";
     }
-
     // =========================
     // 詳細
     // =========================
     @GetMapping("/detail")
-    public String detail(@RequestParam int id, Model model) {
+    public String detail(@RequestParam int id,
+                          HttpSession session,
+                          Model model) {
 
-        model.addAttribute("post", dao.findById(id));
+        // ★ここ重要（統一）
+    	if (session.getAttribute("loginUser") == null) {
+            return "redirect:/list?error=login";
+        }
+
+        Post post = dao.findById(id);
+        model.addAttribute("post", post);
 
         return "detail";
     }
 
     // =========================
-    // 削除
+    // 削除（管理者のみ）
     // =========================
     @PostMapping("/delete")
-    public String delete(@RequestParam("id") int id,
-                         HttpSession session) {
+    public String deletePost(@RequestParam int id,
+                             HttpSession session) {
 
-        if (!checkAdmin(session)) {
+        User loginUser = (User) session.getAttribute("loginUser");
+
+        // 未ログイン
+        if (loginUser == null) {
+            return "redirect:/login";
+        }
+
+        // 管理者以外拒否
+        if (!"admin".equals(loginUser.getRole())) {
             return "redirect:/list";
         }
 
-        if (id <= 0) {
-            return "redirect:/list";
-        }
-
-        
-        dao.deletePost(id);
+        dao.delete(id);
 
         return "redirect:/list";
     }
-    @GetMapping("/adminLogin")
-    public String loginPage() {
-        return "adminLogin";
-    }
 
-    @PostMapping("/adminLogin")
-    public String login(
-            @RequestParam String id,
-            @RequestParam String pass,
-            HttpSession session
-    ) {
-
-        if ("adminsekine".equals(id) && BCrypt.checkpw(pass,
-                "$2a$10$R0BWUYpyMhreCQuKJvBfX.de5NRstd4d0svuOYG0ffyPAYHpAsmk2")) {
-
-            session.setAttribute("role", "admin");
-            return "redirect:/list";
-        }
-
-        return "redirect:/adminLogin?error=1";
-    }
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-
-        session.invalidate(); // ⭐セッション削除
-
-        return "redirect:/list"; // 一覧へ
-    }
+    // =========================
+    // 管理者チェック（未使用なら削除OK）
+    // =========================
     private boolean checkAdmin(HttpSession session) {
         String role = (String) session.getAttribute("role");
         return "admin".equals(role);

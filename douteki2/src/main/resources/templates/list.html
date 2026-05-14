@@ -2,371 +2,203 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>掲示板一覧</title>
-
-<style>
-body {
-	margin: 0;
-	font-family: sans-serif;
-	background: #f5f5f5;
-}
-
-/* ヘッダー */
-.header {
-	text-align: center;
-	padding: 10px;
-}
-
-/* 投稿ボタン */
-.post-btn {
-	padding: 10px 20px;
-	background: #007bff;
-	color: white;
-	border: none;
-	cursor: pointer;
-	border-radius: 6px;
-}
-
-/* グリッド */
-.container {
-	display: grid;
-	grid-template-columns: repeat(6, 1fr);
-	gap: 10px;
-	padding: 10px;
-	align-items: start;
-}
-
-/* ★正方形カード */
-.card {
-	background: white;
-	border: 1px solid #ccc;
-	padding: 10px;
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	border-radius: 0px;
-	aspect-ratio: 1/1; /* ★正方形の核心 */
-	min-width: 0;
-	overflow: hidden;
-	border-radius: 12px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* 管理者 */
-.admin-card {
-	background: linear-gradient(135deg, #fff7c0, #ffe680);
-	border: 2px solid gold;
-}
-
-/* 名前 */
-.name {
-	font-weight: bold;
-}
-
-/* 王冠 */
-.crown {
-	color: gold;
-}
-
-/* 入力 */
-input, textarea {
-	width: 100%;
-	margin: 5px 0;
-	padding: 8px;
-	box-sizing: border-box;
-	border-radius: 6px;
-	border: 1px solid #ccc;
-}
-
-textarea {
-	min-height: 120px;
-	background: #f7f7f7;
-	resize: vertical;
-}
-
-/* モーダル */
-.modal {
-	display: none;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-	background: white;
-	width: 90%;
-	max-width: 400px;
-	margin: 10% auto;
-	padding: 20px;
-	border-radius: 10px;
-}
-
-/* カード下ボタン */
-.card-actions {
-	margin-top: auto;
-	display: flex;
-	justify-content: space-between;
-	gap: 5px;
-}
-
-.detail-btn {
-	background: #007bff;
-	color: white;
-	padding: 5px 10px;
-	border-radius: 5px;
-	text-decoration: none;
-	font-size: 13px;
-}
-
-.delete-btn {
-	background: #dc3545;
-	color: white;
-	padding: 5px 10px;
-	border-radius: 5px;
-	text-decoration: none;
-	font-size: 13px;
-}
-
-/* テキスト崩れ防止 */
-.card p {
-	word-break: break-word;
-	overflow-wrap: anywhere;
-	white-space: pre-wrap;
-	min-width: 0;
-}
-
-/* リンク崩れ防止 */
-.card a {
-	display: block;
-	max-width: 100%;
-	word-break: break-word;
-	overflow-wrap: anywhere;
-	min-width: 0;
-}
-
-/* ページング */
-.pagination {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 8px;
-	margin: 20px 0;
-}
-
-.pagination a {
-	padding: 6px 12px;
-	border: 1px solid #ccc;
-	border-radius: 6px;
-	text-decoration: none;
-	color: black;
-	background: white;
-}
-
-.pagination a:hover {
-	background: #007bff;
-	color: white;
-}
-
-.pagination a.active {
-	background: #007bff;
-	color: white;
-	font-weight: bold;
-}
-
-/* スマホ */
-@media ( max-width :1000px) {
-	.container {
-		grid-template-columns: repeat(4, 1fr);
-	}
-}
-
-@media ( max-width :600px) {
-	.container {
-		grid-template-columns: repeat(2, 1fr);
-	}
-}
-
-input::placeholder {
-	color: #aaa;
-	font-size: 13px;
-}
-
-.button-area {
-	display: flex;
-	justify-content: flex-end; /* 右寄せ */
-	gap: 10px; /* ボタン間の余白 */
-	margin-top: 15px;
-}
-
-.btn {
-	padding: 10px 18px;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	font-weight: bold;
-}
-
-.submit {
-	background: #1877f2;
-	color: white;
-}
-
-.close {
-	background: #ccc;
-	color: #333;
-}
-</style>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" th:href="@{/css/header.css}">
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 
 <body>
+	<div th:replace="fragments/header :: header"></div>
+	<!-- =========================
+     ヘッダー（LINE風）
+========================= -->
 
+
+	<!-- ログイン表示 -->
+
+
+	<!-- =========================
+     検索バー（短くする想定）
+========================= -->
+	<form action="/list" method="get" class="search-form">
+
+		<input type="text" name="keyword" placeholder="検索..."
+			th:value="${keyword}">
+
+		<button type="submit">検索</button>
+
+	</form>
+	<div th:if="${param.error != null}"
+		style="color: red; font-weight: bold; text-align: center; margin-top: 10px;">
+
+		ログインしてください</div>
+	<!-- =========================
+     タイトル＆投稿ボタン
+========================= -->
 	<div class="header">
 
 		<div style="text-align: right;">
-			<span th:if="${isAdmin}"> 管理者 | <a href="/logout">ログアウト</a>
-			</span> <span th:unless="${isAdmin}"> <a href="/adminLogin">管理者ログイン</a>
+			<span th:if="${isAdmin}"> 管理者 | <a href="/adminLogout">ログアウト</a>
 			</span>
 		</div>
 
 		<h2>交流サイト</h2>
 
-		<button class="post-btn" onclick="openModal()">＋ 新しい投稿</button>
+		<!-- ログイン中 -->
+		<button th:if="${session.loginUser != null}" class="post-btn"
+			onclick="openModal()">＋ 新しい投稿</button>
 
+		<!-- 未ログイン -->
+		<button th:if="${session.loginUser == null}" class="post-btn"
+			onclick="location.href='/list?error=login'">＋ 新しい投稿</button>
 		<div style="color: red;" th:if="${param.limit}">1日の投稿は2回までです</div>
+
 	</div>
 
-	<!-- モーダル -->
+	<!-- =========================
+     投稿モーダル
+========================= -->
 	<div id="modal" class="modal">
-		<div class="modal-content">
 
-			<form action="/post" method="post">
+		<div class="modal-content sns-post">
+			<div class="sns-header" th:if="${registered == null}">
+				<span>新規投稿</span>
+			</div>
 
-				名前：<input type="text" name="name" required> メッセージ：
-				<textarea name="message" required></textarea>
-				SNS1：<input type="text" name="snsUrl" id="twitterUser"
-					placeholder="@twitter_id"> SNS2：<input type="text"
-					name="snsUrl2" id="instagramUser" placeholder="@instagram_id">
+			<form id="postForm" action="/post" method="post">
 
-				Discord：<input type="text" name="discordName"
-					placeholder="ユーザー名#0000">
-				<div class="button-area">
-					<button type="submit" class="btn submit">送信</button>
-					<button type="button" class="btn close" onclick="closeModal()">閉じる</button>
+
+
+				<textarea name="message" placeholder="いまどうしてる？" required
+					class="sns-textarea"></textarea>
+
+				<!-- ⭐SNS入力（常時表示に変更） -->
+				<div class="sns-box">
+
+					<input type="text" id="twitterUser" placeholder="Twitter @user"
+						class="sns-input"> <input type="text" id="instagramUser"
+						placeholder="Instagram @user" class="sns-input"> <input
+						type="text" name="discordName" placeholder="Discord ID"
+						class="sns-input">
+
+				</div>
+
+				<!-- hidden -->
+				<input type="hidden" name="snsUrl"> <input type="hidden"
+					name="snsUrl2">
+
+				<div class="post-buttons">
+					<button type="submit" class="post-submit">新規登録</button>
+					<button type="button" class="close-btn" onclick="closeModal()">閉じる</button>
 				</div>
 			</form>
 
-
-
 		</div>
 	</div>
-
 	<hr>
 
-	<!-- 投稿一覧 -->
+	<!-- =========================
+     投稿一覧
+========================= -->
 	<div class="container">
 
 		<div th:each="p : ${posts}" class="card"
-			th:classappend="${p.admin} ? 'admin-card' : ''">
+			th:classappend="${p.admin} ? 'admin-view' : ''">
 
-			<!-- 名前 -->
 			<div class="name">
-				<span th:text="${p.name}"></span> <span th:if="${p.admin}"
-					class="crown">👑</span>
+				<span th:text="${p.name}"></span> <span th:if="${p.admin}">👑</span>
 			</div>
 
-			<!-- コメントだけ表示 -->
-			<p th:utext="${p.message}"></p>
+			<p th:text="${p.message}"></p>
 
+			<div class="time">
+				<span th:text="${p.createdAt}"></span>
+			</div>
 
-			<!-- ★詳細ボタンだけ残す -->
 			<div class="card-actions">
 
-    <!-- 詳細 -->
-    <a th:href="@{/detail(id=${p.id})}" class="detail-btn">
-        詳細
-    </a>
+				<a th:href="@{/detail(id=${p.id})}" class="detail-btn"> 詳細 </a>
 
-    <!-- 管理者だけ表示 -->
-    <span th:if="${isAdmin}">
 
-        <form th:action="@{/delete}" method="post" style="display:inline;">
 
-            <!-- 投稿ID -->
-            <input type="hidden" name="id" th:value="${p.id}">
 
-            <!-- CSRF（Spring Security使っている場合のみ有効） -->
-            <input type="hidden"
-                   th:if="${_csrf != null}"
-                   th:name="${_csrf.parameterName}"
-                   th:value="${_csrf.token}">
 
-            <button type="submit"
-                    class="delete-btn"
-                    onclick="return confirm('本当に削除しますか？');">
-                削除
-            </button>
+				<!-- 管理者だけ表示 -->
 
-        </form>
+				<form
+					th:if="${session.loginUser != null and session.loginUser.role == 'admin'}"
+					th:action="@{/delete}" method="post" style="display: inline;">
 
-    </span>
+					<input type="hidden" name="id" th:value="${p.id}">
 
-</div>
+					<button type="submit" onclick="return confirm('削除しますか？')">
+						削除</button>
 
+				</form>
+			</div>
 		</div>
 
 	</div>
 
-	<!-- ページング -->
-	<div class="pagination">
-
-		<a th:if="${currentPage > 1}"
-			th:href="@{/list(page=${currentPage - 1})}">←</a> <span
-			th:each="i : ${#numbers.sequence(1,20)}"> <a
-			th:href="@{/list(page=${i})}"
-			th:classappend="${i == currentPage} ? 'active' : ''" th:text="${i}">
-		</a>
-		</span> <a th:if="${currentPage < 20}"
-			th:href="@{/list(page=${currentPage + 1})}">→</a>
-
-	</div>
-
+	<!-- =========================
+     JS
+========================= -->
 	<script>
-function openModal(){
-	document.getElementById("modal").style.display="block";
-}
-function closeModal(){
-	document.getElementById("modal").style.display="none";
-}
-function copyDiscord(btn){
-	const id = btn.getAttribute("data-id");
 
-	navigator.clipboard.writeText(id).then(() => {
-		alert("Discord IDをコピーしました: " + id);
-	});
+function openModal() {
+  document.getElementById("modal").style.display = "block";
 }
 
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+// SNS変換
 function makeTwitterUrl(user) {
   user = user.trim().replace(/^@/, '');
-  if (!user) return '';
-  return 'https://twitter.com/' + user;
+  return user ? 'https://twitter.com/' + user : '';
 }
 
 function makeInstagramUrl(user) {
   user = user.trim().replace(/^@/, '');
-  if (!user) return '';
-  return 'https://instagram.com/' + user;
+  return user ? 'https://instagram.com/' + user : '';
 }
 
-document.querySelector('form').addEventListener('submit', function () {
-  const twitterUser = document.getElementById('twitterUser').value;
-  const instagramUser = document.getElementById('instagramUser').value;
-  
-  document.querySelector('input[name="snsUrl"]').value = makeTwitterUrl(twitterUser);
-  document.querySelector('input[name="snsUrl2"]').value = makeInstagramUrl(instagramUser);
+// 投稿時処理
+const form = document.getElementById("postForm");
+
+form.addEventListener("submit", function () {
+
+  const twitter = document.getElementById("twitterUser").value;
+  const insta = document.getElementById("instagramUser").value;
+
+  document.querySelector("input[name='snsUrl']").value =
+    makeTwitterUrl(twitter);
+
+  document.querySelector("input[name='snsUrl2']").value =
+    makeInstagramUrl(insta);
 });
+
+// ダークモード
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+
+  localStorage.setItem(
+    "dark",
+    document.body.classList.contains("dark") ? "on" : "off"
+  );
+}
+
+window.addEventListener("load", () => {
+  if (localStorage.getItem("dark") === "on") {
+    document.body.classList.add("dark");
+  }
+});
+
 </script>
 
 </body>

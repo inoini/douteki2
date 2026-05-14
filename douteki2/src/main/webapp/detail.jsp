@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="java.util.*,model.Post"%>
-<%@ page import="model.Post"%>
+<%@ page import="java.util.*,com.example.app.Post"%>
+<%@ page import="com.example.app.Post"%>
 <link rel="stylesheet" href="<%=request.getContextPath()%>/css/style.css">
 <html>
 
@@ -67,7 +67,7 @@ if (p.getSnsUrl2() != null && !p.getSnsUrl2().isEmpty()) {
 
 	戻る</button>
 <form action="<%=request.getContextPath()%>/delete" method="post">
-    <input type="hidden" name="id" value="<%=p.getId()%>">
+    <input type="hidden" name="id" value="<%=p.getUserId()%>">
     <button type="submit" class="deleteBtn">削除</button>
 </form>
 <button onclick="copyDiscord()">DISCORDコピー</button>

@@ -3,132 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <title>詳細</title>
-
-<style>
-body {
-	font-family: sans-serif;
-	background: #f5f5f5;
-}
-
-.container {
-	max-width: 600px;
-	margin: 50px auto;
-}
-
-.card {
-	background: white;
-	padding: 20px;
-	border-radius: 10px;
-	border: 1px solid #ccc;
-}
-
-.name {
-	font-weight: bold;
-	font-size: 18px;
-}
-
-.message {
-	margin: 15px 0;
-	white-space: pre-wrap;
-}
-
-a {
-	display: inline-block;
-	margin-top: 10px;
-}
-
-.back-area {
-	margin-top: 30px;
-	text-align: center;
-	padding-bottom: 20px;
-}
-
-.back-btn {
-	display: inline-block;
-	padding: 10px 20px;
-	background: #1877f2;
-	color: white;
-	text-decoration: none;
-	border-radius: 25px;
-	font-weight: bold;
-	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-	transition: 0.2s;
-}
-
-.back-btn:hover {
-	background: #145dc9;
-	transform: translateY(-2px);
-}
-.message-box {
-	border: 1px solid #ddd;
-	border-radius: 10px;
-	background: #fafafa;
-
-	padding: 15px;
-
-	/* ★高さを確保 */
-	min-height: 120px;
-
-	/* ★最大高さを制限（長文対策） */
-	max-height: 300px;
-
-	/* ★はみ出したらスクロール */
-	overflow-y: auto;
-
-	box-sizing: border-box;
-}
-
-/* 文字のはみ出し防止 */
-.message-box p {
-	margin: 0;
-	white-space: pre-wrap;   /* 改行保持 */
-	word-break: break-word;  /* 長い文字折り返し */
-}
-</style>
+<link rel="stylesheet" th:href="@{/css/common.css}">
+<link rel="stylesheet" th:href="@{/css/detail.css}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-
 	<div class="container">
 
 		<div class="card">
 
 			<div class="name" th:text="${post.name}"></div>
+
 			<div class="message-box">
-			<p th:text="${post.message}"></p>
+				<p th:text="${post.message}"></p>
 			</div>
+
 			<!-- SNS -->
 			<p th:if="${post.snsUrl}">
 				Twitter： <a
-					th:href="${post.snsUrl.startsWith('http') ? post.snsUrl : 'https://twitter.com/' + #strings.replace(post.snsUrl,'@','')}"
-					target="_blank" th:text="${post.snsUrl}"> </a>
+					th:href="${'https://twitter.com/' + #strings.replace(#strings.trim(post.snsUrl), ' ', '')}"
+					target="_blank"> @<span th:text="${#strings.trim(post.snsUrl)}"></span>
+				</a>
 			</p>
-
 
 			<p th:if="${post.snsUrl2}">
-				Instagram： <a
-					th:href="${post.snsUrl2.startsWith('http') ? post.snsUrl2 : 'https://instagram.com/' + #strings.replace(post.snsUrl2,'@','')}"
-					target="_blank" th:text="${post.snsUrl2}"> </a>
+				Instagram： <a th:href="${'https://instagram.com/' + post.snsUrl2}"
+					target="_blank"> @<span th:text="${post.snsUrl2}"></span>
+				</a>
 			</p>
+
+			<!-- Discord -->
 			<div th:if="${post.discordName}" style="margin-top: 10px;">
-
 				<p>
-					Discord： <span th:text="${post.discordName}"></span>
-
-					<button type="button" class="copy-btn" onclick="copyDiscord(this)"
-						th:attr="data-id=${post.discordName}">コピー</button>
+					Discord： <span id="discordText" th:text="${post.discordName}"></span>
+					<button type="button" onclick="copyDiscord()">コピー</button>
 				</p>
-
-
-				<div class="back-area">
-					<a href="/list" class="back-btn">← 一覧に戻る</a>
-				</div>
-
 			</div>
 
+			<!-- 戻るボタン（外に出すのが正解） -->
+			<div class="back-area">
+				<a href="/list" class="back-btn">← 一覧に戻る</a>
+			</div>
+			<div th:if="${session.loginUser != null and session.loginUser.role == 'admin'}" class="delete-area">
+
+				<form th:action="@{/delete}" method="post">
+
+					<input type="hidden" name="id" th:value="${post.id}">
+
+					<button type="submit" class="delete-btn"
+						onclick="return confirm('削除しますか？')">削除</button>
+
+				</form>
+
+			</div>
 		</div>
-		<script>
-			
-		</script>
+
+	</div>
+
+	<script>
+function copyDiscord() {
+
+    const text = document.getElementById("discordText").innerText;
+
+    if (!text || text.trim() === "") {
+        showToast("Discord IDがありません");
+        return;
+    }
+
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            showToast("コピーしました！");
+        })
+        .catch(() => {
+            showToast("コピー失敗");
+        });
+}
+
+function showToast(message) {
+
+    let toast = document.getElementById("bigToast");
+
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "bigToast";
+        toast.className = "big-toast";
+        document.body.appendChild(toast);
+    }
+
+    toast.innerText = message;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2000);
+}
+</script>
+
 </body>
 </html>

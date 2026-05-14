@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
-<%@ page import="java.util.*,model.Post"%>
+<%@ page import="java.util.*,com.example.app.Post"%>
 <%@ page import="jakarta.servlet.http.*" %>
 <%@ page import="org.apache.commons.text.StringEscapeUtils" %>
 <%
@@ -59,13 +59,13 @@ if (currentPage == null) {
 		<!-- 詳細 -->
 	<div class="buttons">
 		<a class="mainBtn"
-			href="<%=request.getContextPath()%>/detail?id=<%=p.getId()%>"> 詳細
+			href="<%=request.getContextPath()%>/detail?id=<%=p.getUserId()%>"> 詳細
 
 		</a>
 
 		<!-- 削除 -->
 	<form action="<%=request.getContextPath()%>/delete" method="post" style="display:inline;">
-    <input type="hidden" name="id" value="<%=p.getId()%>">
+    <input type="hidden" name="id" value="<%=p.getUserId()%>">
     <button type="submit" class="deleteBtn"
         onclick="return confirm('削除しますか？');">
         削除

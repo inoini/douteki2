@@ -1,0 +1,256 @@
+/* =========================
+   全体
+========================= */
+body {
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	background: #e9ebee;
+}
+
+/* =========================
+   上部ヘッダー（緑バー）
+========================= */
+.app-header {
+	background: #4a90e2;
+	color: white;
+	padding: 10px 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+/* 左のログイン情報 */
+.app-header span {
+	font-size: 12px;
+}
+
+/* タイトル */
+.title {
+	font-weight: bold;
+}
+
+/* ボタン群 */
+.header-buttons {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+}
+
+/* =========================
+   ボタン共通
+========================= */
+.btn {
+	background: #00c300;
+	color: white;
+	padding: 6px 10px;
+	border-radius: 20px;
+	text-decoration: none;
+	font-size: 12px;
+	border: none;
+	cursor: pointer;
+}
+
+.btn:hover {
+	opacity: 0.8;
+}
+
+/* 管理者ボタン */
+.btn.admin {
+	background: #ff3b30;
+	color: white;
+}
+
+/* =========================
+   検索バー
+========================= */
+.search-form {
+    display: flex;
+    gap: 5px;
+    padding: 10px;
+    background: white;
+    justify-content: center;
+}
+
+.search-form input {
+    width: 200px;   /* ←ここがポイント */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.search-form button {
+    padding: 8px 12px;
+    border: none;
+    background: #00c300;
+    color: white;
+    border-radius: 10px;
+}
+/* =========================
+   中央ヘッダー
+========================= */
+.header {
+	padding: 10px;
+	text-align: center;
+}
+
+/* 投稿ボタン */
+.post-btn {
+	background: #00c300;
+	color: white;
+	border: none;
+	padding: 10px 15px;
+	border-radius: 20px;
+	cursor: pointer;
+}
+
+/* エラー表示 */
+.header div {
+	font-size: 12px;
+}
+
+/* =========================
+   投稿一覧（LINEカード）
+========================= */
+.container {
+	max-width: 600px;
+	margin: auto;
+	padding-bottom: 80px;
+}
+
+
+
+/* 名前 */
+
+/* 投稿本文 */
+.card p {
+	font-size: 15px;
+	margin: 6px 0;
+	white-space: pre-wrap;
+}
+
+/* 時間 */
+.time {
+	font-size: 11px;
+	color: gray;
+	text-align: right;
+	margin-top: 5px;
+}
+
+/* =========================
+   ボタンエリア（詳細・DM・削除）
+========================= */
+.card-actions {
+	display: flex;
+	gap: 6px;
+	margin-top: 8px;
+}
+
+.card-actions button, .detail-btn {
+	font-size: 12px;
+	padding: 5px 10px;
+	border-radius: 20px;
+	border: none;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+/* 詳細 */
+.detail-btn {
+	background: #007aff;
+	color: white;
+}
+
+/* DM */
+.card-actions button {
+	background: #00c300;
+	color: white;
+}
+
+/* 削除 */
+.card-actions form button {
+	background: #ff3b30;
+}
+
+/* =========================
+   モーダル
+========================= */
+.modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+}
+
+
+
+/* SNS入力 */
+.sns-input, .sns-textarea {
+	width: 100%;
+	margin-top: 8px;
+	padding: 8px;
+	border-radius: 10px;
+	border: 1px solid #ddd;
+}
+
+/* =========================
+   ダークモード
+========================= */
+body.dark {
+	background: #1c1c1e;
+	color: white;
+}
+
+body.dark .card {
+	background: #2c2c2e;
+	color: white;
+}
+
+body.dark .search-form {
+	background: #2c2c2e;
+}/* =========================
+   右上ログインメニュー
+========================= */
+
+.top-menu {
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	padding: 10px 20px;
+	box-sizing: border-box;
+}
+
+/* 未ログイン */
+.guest-menu {
+	display: flex;
+	gap: 10px;
+}
+
+/* ログイン中 */
+.login-menu {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+/* 共通ボタン */
+.menu-btn,
+.logout-btn {
+	background: #00c300;
+	color: white;
+	border: none;
+	border-radius: 20px;
+	padding: 8px 14px;
+	text-decoration: none;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+/* ユーザー名 */
+.login-name {
+	font-weight: bold;
+	font-size: 13px;
+}

@@ -1,0 +1,141 @@
+/* モーダル全体 */
+.modal-content {
+    width: 90%;
+    max-width: 500px;
+
+    background: #fff;
+    border-radius: 20px;
+
+    padding: 10px 20px;
+
+    margin: 120px auto;
+}
+
+/* ヘッダー */
+.sns-header {
+    background: linear-gradient(135deg, #1877f2, #0d5fe9);
+
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+
+    text-align: center;
+
+    padding: 8px;
+    border-radius: 12px;
+
+    margin-bottom: 12px;
+}
+
+/* テキストエリア */
+.sns-textarea {
+    width: 100%;
+    min-height: 120px;
+
+    border: 2px solid #e5e5e5;
+    border-radius: 20px;
+
+    padding: 15px;
+
+    font-size: 16px;
+
+    resize: vertical;
+    box-sizing: border-box;
+
+    outline: none;
+
+    margin-bottom: 15px;
+}
+
+/* SNSボックス */
+.sns-box {
+    border: 2px solid #efefef;
+    border-radius: 20px;
+
+    padding: 20px;
+
+    background: #fafafa;
+
+    margin-bottom: 25px;
+}
+
+/* 入力欄 */
+.sns-input {
+    width: 100%;
+
+    padding: 10px 14px;
+
+    margin-bottom: 12px;
+
+    border: 2px solid #e3e3e3;
+    border-radius: 12px;
+
+    font-size: 16px;
+
+    box-sizing: border-box;
+}
+
+.sns-input:last-child {
+    margin-bottom: 0;
+}
+
+/* ボタン横並び */
+.post-buttons {
+    display: flex;
+    gap: 15px;
+}
+/* 投稿ボタン */
+.post-submit {
+    background: #11c521;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    padding: 10px 18px;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/* 閉じるボタン */
+.close-btn {
+    background: red;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    padding: 10px 18px;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/* 横並び */
+.post-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+
+
+
+/* =========================
+   スマホ調整
+========================= */
+@media (max-width: 600px) {
+
+    .card {
+        padding: 12px;
+    }
+
+    .message {
+        font-size: 13px;
+    }
+}

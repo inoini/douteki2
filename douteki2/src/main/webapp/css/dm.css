@@ -1,0 +1,99 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #e5ddd5;
+}
+
+/* ===== 上部固定ヘッダー ===== */
+.dm-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: #06c755;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 1000;
+}
+
+.back-btn {
+  position: absolute;
+  left: 10px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.dm-title {
+  font-weight: bold;
+}
+
+/* ===== 本文 ===== */
+.dm-container {
+  padding-top: 60px; /* ←ヘッダー分ずらす */
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* メッセージ */
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  padding-bottom: 80px;
+}
+
+/* 吹き出し */
+.msg {
+  max-width: 70%;
+  padding: 10px;
+  border-radius: 15px;
+  word-break: break-word;
+}
+
+/* 自分 */
+.me {
+  align-self: flex-end;
+  background: #06c755;
+  color: white;
+}
+
+/* 相手 */
+.you {
+  align-self: flex-start;
+  background: white;
+  color: black;
+}
+
+/* 送信フォーム固定 */
+.dm-form {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border-top: 1px solid #ccc;
+}
+
+.dm-form input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+
+.dm-form button {
+  background: #06c755;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0 15px;
+}

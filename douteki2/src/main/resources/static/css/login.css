@@ -1,0 +1,141 @@
+
+/* =========================
+   背景（登録と同じ）
+========================= */
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #f0f2f5, #dfe6f1);
+    overflow-x: hidden;
+}
+
+/* =========================
+   カード（登録と完全一致）
+========================= */
+.login-container {
+    width: 360px;
+    margin: 120px auto;
+    padding: 30px;
+
+    background: #ffffff;
+    border-radius: 12px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+    text-align: center;
+
+    border-top: 5px solid #4a90e2;
+}
+
+/* =========================
+   タイトル
+========================= */
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+    letter-spacing: 1px;
+}
+
+/* =========================
+   入力欄（登録と統一）
+========================= */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    font-size: 14px;
+    box-sizing: border-box;
+
+    transition: 0.2s;
+}
+
+/* フォーカス */
+input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 6px rgba(74,144,226,0.3);
+}
+
+/* =========================
+   パスワード
+========================= */
+.password-box {
+    position: relative;
+    width: 100%;
+}
+
+.password-box input {
+    width: 100%;
+    padding: 12px 40px 12px 12px; /* 👈右に余白必須 */
+    box-sizing: border-box;
+}
+
+.password-box button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 30px;
+    height: 30px;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    z-index: 2; /* 👈これ重要 */
+}
+/* =========================
+   ログインボタン（登録と同じ）
+========================= */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+
+    background: linear-gradient(135deg, #4a90e2, #357bd8);
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(74,144,226,0.4);
+}
+
+/* =========================
+   リンク
+========================= */
+.link {
+    display: block;
+    margin-top: 15px;
+
+    font-size: 13px;
+    color: #666;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+input {
+    width: 100%;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+}

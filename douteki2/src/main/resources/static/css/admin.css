@@ -1,0 +1,89 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #f0f2f5;
+}
+
+/* 中央配置 */
+.container {
+    width: 340px;
+    margin: 120px auto;
+    padding: 25px;
+
+    background: #ffffff;
+    border-radius: 10px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* タイトル */
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 入力欄 */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px 40px 10px 10px;
+    margin: 10px 0;
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* パスワード欄（目アイコン付き） */
+.password-box {
+    position: relative;
+    width: 100%;
+}
+
+/* 👁ボタン */
+.password-box button {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* ログインボタン */
+.btn.admin {
+    width: 95%;
+    padding: 10px;
+
+    margin-top: 15px;
+
+    background: #d9534f; /* 管理者＝赤系 */
+    color: white;
+
+    border: none;
+    border-radius: 6px;
+
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+/* ホバー */
+.btn.admin:hover {
+    background: #c9302c;
+}
+
+/* フォーカス */
+input:focus {
+    outline: none;
+    border-color: #d9534f;
+    box-shadow: 0 0 5px rgba(217,83,79,0.3);
+}
