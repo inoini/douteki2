@@ -1,76 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
-
-    <!-- Spring Boot親設定 -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
-        <relativePath/>
-    </parent>
 
     <groupId>com.example</groupId>
     <artifactId>douteki2</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>douteki2</name>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
-        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
-         <dependency>
-    <groupId>org.mindrot</groupId>
-    <artifactId>jbcrypt</artifactId>
-    <version>0.4</version>
-</dependency>
-        <!-- Web（Controller動かすため必須） -->
+        <!-- パスワード暗号化ライブラリ (今回のエラーの原因) -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
         </dependency>
 
-        <!-- Thymeleaf（画面用） -->
+        <!-- サーブレットAPI -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- JDBC（DAO使うなら必須） -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
-
-        <!-- MySQLドライバ -->
+        <!-- MySQL接続 (もし使っていれば) -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <scope>runtime</scope>
+            <version>8.0.33</version>
         </dependency>
-
-        <!-- 開発用（あってもOK） -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
-
     </dependencies>
 
     <build>
+        <finalName>app</finalName>
         <plugins>
-
-            <!-- Spring Boot用ビルド -->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
             </plugin>
-
         </plugins>
     </build>
-
 </project>
