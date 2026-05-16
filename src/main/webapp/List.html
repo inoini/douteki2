@@ -1,0 +1,74 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="java.util.*,model.Post"%>
+
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>投稿一覧</title>
+<style>
+.container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 15px;
+	padding: 10px;
+}
+
+.card {
+	width: 200px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	padding: 10px;
+	background: #f9f9f9;
+	box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.name {
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.message {
+	word-break: break-word;
+}
+</style>
+</head>
+<body>
+
+	<h2>投稿一覧</h2>
+
+	<!-- 投稿画面へ -->
+	<a href="<%= request.getContextPath() %>/index.jsp">投稿画面へ戻る</a>
+
+	<hr>
+	<div class="container">
+		<%
+List<Post> posts = (List<Post>)request.getAttribute("posts");
+
+if(posts != null && posts.size() > 0){
+    for(Post p : posts){
+%>
+
+		<div class="card">
+			<div class="name"><%= p.getName() %></div>
+
+			<div class="message">
+				<%= p.getMessage() %>
+			</div>
+			
+			<a href="<%= request.getContextPath() %>/delete?id=<%= p.getId() %>"
+				onclick="return confirm('削除しますか？');"> [削除] </a>
+				<div class="time"><%= p.getCreatedAt() %></div>
+		</div>
+
+		<%
+    }
+} else {
+%>
+		<p>データがありません</p>
+		<%
+}
+%>
+	</div>
+</body>
+</html>
