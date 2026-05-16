@@ -5,15 +5,18 @@ WORKDIR /app
 # すべてのファイルをコピー
 COPY . .
 
-# pom.xml がある場所（douteki2/douteki2）を指定してビルドを実行
-RUN mvn -f douteki2/douteki2/pom.xml clean package -DskipTests
+# pom.xmlを自動で探し、その場所でビルドを実行して、完成品(JAR)を /app/app.jar に集める
+RUN POM_PATH=$(find . -name pom.xml | head -n 1) && \
+    echo "Found pom.xml at: $POM_PATH" && \
+    mvn -f "$POM_PATH" clean package -DskipTests && \
+    cp $(dirname "$POM_PATH")/target/*.jar /app/app.jar
 
 # --- ステージ2: 実行環境 ---
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
-# 作成されたJARファイルをコピー（ここも深い階層から取得）
-COPY --from=build /app/douteki2/douteki2/target/*.jar app.jar
+# ステージ1で集めた app.jar をコピー
+COPY --from=build /app/app.jar app.jar
 
 EXPOSE 10000
 
