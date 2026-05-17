@@ -27,20 +27,7 @@ public class PostController {
     // =========================
     // 管理者画面
     // =========================
-    @GetMapping("/admin")
-    public String adminPage(Model model,
-                            HttpSession session) {
-
-        String role = (String) session.getAttribute("role");
-
-        if (!"admin".equals(role)) {
-            return "redirect:/admin/login";
-        }
-
-        model.addAttribute("posts", dao.findAll());
-
-        return "admin";
-    }
+    
     // =========================
     // 一覧
     // =========================
