@@ -6,20 +6,44 @@
 <title>ユーザー登録</title>
 <link rel="stylesheet" th:href="@{/css/common.css}">
 <link rel="stylesheet" th:href="@{/css/register.css}">
+<style>
+    /* 追加の簡易スタイル：制限メッセージを際立たせる */
+    .restriction-box {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .done-message {
+        color: #155724;
+        background-color: #d4edda;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+</style>
 </head>
 <body>
 
 	<div class="register-container">
 		<h2>新規ユーザー登録</h2>
 
-		<!-- 1. ログイン中の場合、またはボタンを押した後に「すでに登録済み」と判定された場合に表示 -->
-		<p class="done-message" th:if="${session.user != null or param.already}">登録済みです</p>
-		
-		<!-- 2. 通常の登録完了メッセージ -->
+		<!-- 1. 成功メッセージ：登録直後に表示 -->
 		<p class="done-message" th:if="${param.done}">登録が完了しました！</p>
 
-		<!-- ログインしていない場合、または登録画面を動かしたい場合はフォームを表示 -->
-		<form th:action="@{/register}" method="post" autocomplete="off">
+		<!-- 2. 制限メッセージ：ログイン中、またはクッキーで「登録済み」と判定された場合に表示 -->
+		<div class="restriction-box" th:if="${session.user != null or registered or param.already}">
+			<p><strong>登録済みです</strong></p>
+			<p>荒らし対策のため、このブラウザからの新規登録は制限されています。</p>
+		</div>
+
+		<!-- 3. 入力フォーム：登録済みでない（sessionにもcookieにも情報がない）場合のみ表示 -->
+		<form th:unless="${session.user != null or registered or param.already}" 
+		      th:action="@{/register}" method="post" autocomplete="off">
+			
 			<input type="text" name="id" placeholder="ID" required autocomplete="off"> 
 			<input type="text" name="name" placeholder="名前" required autocomplete="off">
 
@@ -32,8 +56,11 @@
 			<button type="submit" class="register-btn">登録する</button>
 		</form>
 
-		<a th:href="@{/login}" class="login-link">すでにアカウントをお持ちの方はこちら</a> 
-		<a th:href="@{/list(keyword='')}" class="home-link">🏠 ホームへ戻る</a>
+		<!-- ナビゲーション -->
+		<div class="nav-links" style="margin-top: 20px;">
+			<a th:href="@{/login}" class="login-link">すでにアカウントをお持ちの方はこちら</a><br><br>
+			<a th:href="@{/list(keyword='')}" class="home-link">🏠 ホームへ戻る</a>
+		</div>
 	</div>
 
 	<script>
