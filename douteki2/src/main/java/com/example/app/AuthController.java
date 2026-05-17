@@ -54,7 +54,7 @@ public class AuthController {
             // パスワードを暗号化
             String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
             
-            Admin newAdmin = new Admin();
+            admin newAdmin = new admin();
             newAdmin.setId(id);
             newAdmin.setName(name);
             newAdmin.setPassword(hashedPassword);
