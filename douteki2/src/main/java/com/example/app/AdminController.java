@@ -1,4 +1,4 @@
-package com.example.app;
+package com.example.app; // ここはログに合わせて com.example.app にしています
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import Servlet.AdminRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class AuthController {
+public class AdminController {
 
-    // UserRepository ではなく AdminRepository を使う
+    // UserRepository から AdminRepository に変更
     @Autowired
     private AdminRepository adminRepository; 
 
@@ -47,7 +48,7 @@ public class AuthController {
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-        // ★ ここも Admin に修正
+        // ★ User ではなく Admin を使うように修正
         Admin newAdmin = new Admin(); 
         newAdmin.setId(userId);
         newAdmin.setName(name);
@@ -55,7 +56,7 @@ public class AuthController {
         newAdmin.setRole("ADMIN");
 
         try {
-            // ★ ここも adminRepository.save に修正
+            // userRepository ではなく adminRepository を使う
             adminRepository.save(newAdmin);
             
             Cookie cookie = new Cookie("already_reg", "true");
