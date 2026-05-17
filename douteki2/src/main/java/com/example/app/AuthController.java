@@ -1,123 +1,80 @@
 package com.example.app;
 
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import model.User;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue; // 追加
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.Cookie; // 追加
+import jakarta.servlet.http.HttpServletResponse; // 追加
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class AuthController {
 
-	private final UserDAO dao = new UserDAO();
+    @Autowired
+    private UserRepository userRepository;
 
-	// =========================
-	// 登録画面
-	// =========================
-	@GetMapping("/register")
-	public String registerPage(
-	        HttpServletRequest request,
-	        Model model) {
+    /**
+     * 登録画面の表示
+     */
+    @GetMapping("/register")
+    public String showRegisterPage(
+            @CookieValue(value = "already_reg", defaultValue = "false") String alreadyReg,
+            HttpSession session, 
+            Model model) {
+        
+        // 1. セッション（ログイン中）または クッキー（過去に登録済み）をチェック
+        if (session.getAttribute("user") != null || "true".equals(alreadyReg)) {
+            model.addAttribute("registered", true); // これでHTML側で判定する
+        }
+        return "register";
+    }
 
-	    Cookie[] cookies = request.getCookies();
+    /**
+     * ユーザー登録処理
+     */
+    @PostMapping("/register")
+    public String registerUser(
+            @RequestParam("id") String userId,
+            @RequestParam("name") String name,
+            @RequestParam("password") String password,
+            @CookieValue(value = "already_reg", defaultValue = "false") String alreadyReg,
+            HttpServletResponse response, // クッキー書き込み用に追加
+            HttpSession session) {
 
-	    boolean registered = false;
+        // 1. クッキーまたはセッションによる二重登録チェック
+        if (session.getAttribute("user") != null || "true".equals(alreadyReg)) {
+            return "redirect:/register?already";
+        }
 
-	    if (cookies != null) {
-	        for (Cookie cookie : cookies) {
+        // 2. パスワード暗号化
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-	            if (cookie.getName().equals("registered")) {
-	                registered = true;
-	            }
-	        }
-	    }
+        User newUser = new User();
+        newUser.setId(userId);
+        newUser.setName(name);
+        newUser.setPassword(hashedPassword);
+        newUser.setRole("USER");
 
-	    model.addAttribute("registered", registered);
+        try {
+            userRepository.save(newUser);
+            
+            // ★登録成功時、ブラウザに「登録済み」クッキーを保存する
+            Cookie cookie = new Cookie("already_reg", "true");
+            cookie.setMaxAge(60 * 60 * 24 * 365 * 10); // 有効期限：10年（秒単位）
+            cookie.setPath("/"); // サイト全体で有効
+            cookie.setHttpOnly(true); // セキュリティ向上
+            response.addCookie(cookie);
 
-	    return "register";
-	}
-	// =========================
-	// 登録処理
-	// =========================
-	@PostMapping("/register")
-	public String register(
-	        @RequestParam String id,
-	        @RequestParam String name,
-	        @RequestParam String password,
-	        HttpSession session,
-	        HttpServletResponse response) {
+        } catch (Exception e) {
+            return "redirect:/register?error";
+        }
 
-	    id = id.trim();
-	    name = name.trim();
-	    password = password.trim();
-
-	    dao.insertUser(id, name, password, "user");
-
-	    User user = new User();
-	    user.setId(id);
-	    user.setName(name);
-	    user.setRole("user");
-
-	    session.setAttribute("loginUser", user);
-
-	    // Cookie保存（再登録防止）
-	    Cookie cookie = new Cookie("registered", "true");
-
-	    // 1年間保持
-	    cookie.setMaxAge(60 * 60 * 24 * 365);
-
-	    // 全ページで有効
-	    cookie.setPath("/");
-
-	    response.addCookie(cookie);
-
-	    return "redirect:/register?done=true";
-	}
-
-	// =========================
-	// ログイン画面
-
-	// =========================
-	@GetMapping("/login")
-	public String loginPage() {
-		return "login";
-	}
-
-	// =========================
-	// ログイン処理
-	// =========================
-	@PostMapping("/login")
-	public String login(@RequestParam String id, @RequestParam String password, HttpSession session) {
-
-		User user = dao.login(id, password);
-
-		if (user == null) {
-			return "redirect:/login?error=1";
-		}
-
-		   session.setAttribute("loginUser", user);
-
-		return "redirect:/list";
-	}
-
-	// =========================
-	// ログアウト
-	// =========================
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-
-		session.invalidate();
-
-		return "redirect:/list";
-	}
-	@PostMapping("/logout")
-	public String logout1(HttpSession session) {
-
-	    session.invalidate();
-
-	    return "redirect:/list";
-	}
+        return "redirect:/register?done";
+    }
 }
