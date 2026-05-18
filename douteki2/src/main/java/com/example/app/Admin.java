@@ -6,8 +6,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "admin")
-public class admin {
-    @Id
+public class Admin {
+    @I
     private String id;
     private String name;
     private String password;
